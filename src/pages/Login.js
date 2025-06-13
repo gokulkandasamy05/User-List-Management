@@ -5,11 +5,30 @@ import Axios from '../utils/axios';
 import { useDispatch } from 'react-redux';
 import { setLoadingFalse, setLoadingTrue } from '../redux/actions/loaderActions';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { getCookie, setCookie } from '../utils/common';
 
 const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate();
-  
+  const [form] = Form.useForm();
+
+
+  useEffect(() => {
+    const email = getCookie('email')
+    const password = getCookie('password')
+    console.log(email, password)
+    if (email && password) {
+      form.setFieldsValue({
+        email,
+        password
+      });
+    }
+  }, [form])
+
+
+
+
   const submitForm = (values) => {
     const { remember, ...body } = values
     dispatch(setLoadingTrue())
@@ -18,7 +37,11 @@ const Login = () => {
         const responseData = res?.data
         console.log(responseData)
         if (!!responseData) {
-          localStorage.setItem(process.env.REACT_APP_LOGIN_TOKEN, JSON.stringify(responseData))
+          localStorage.setItem(process.env.REACT_APP_LOGIN_TOKEN, JSON.stringify({ ...responseData }))
+          if (remember) {
+            setCookie('email', values?.email, 1)
+            setCookie('password', values?.password, 1)
+          }
           navigate('/user_list')
         }
       })
@@ -38,9 +61,10 @@ const Login = () => {
             labelCol={{ span: 0 }}
             wrapperCol={{ span: 24 }}
             style={{ maxWidth: 800 }}
-            initialValues={{ remember: true }}
+            initialValues={{ remember: false, email:'', password:'' }}
             onFinish={submitForm}
             autoComplete="off"
+            form={form}
           >
             <Form.Item
               label="Email"
