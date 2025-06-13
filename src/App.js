@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { lazy, Suspense } from 'react';
+import { HashRouter, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login';
+import Layout from './layouts/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
+import { ProtectedRoutes } from './utils/routes';
+import { useSelector } from 'react-redux';
+import Spinner from './components/Spinner';
 
 function App() {
+  const { loading } = useSelector(state => state?.Loader)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <HashRouter>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+              {ProtectedRoutes.map(({ route, component: Component }) => (
+                <Route key={route} path={route} element={<Component />} />
+              ))}
+            </Route>
+          </Routes>
+        </Suspense>
+      </HashRouter>
+      {loading && <Spinner></Spinner>}
+    </>
   );
 }
 
