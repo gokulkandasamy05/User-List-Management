@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Layout from './layouts/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -16,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+               <Route index element={<Navigate to="/user_list" replace />} />
               {ProtectedRoutes.map(({ route, component: Component }) => (
                 <Route key={route} path={route} element={<Component />} />
               ))}

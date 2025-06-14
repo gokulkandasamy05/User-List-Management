@@ -9,6 +9,8 @@ const initialState = {
   error: "",
   totalPages: 0,
   currentPage: 1,
+  count: 0,
+  perPage: 0
 };
 
 const userReducer = (state = initialState, action) => {
@@ -21,13 +23,17 @@ const userReducer = (state = initialState, action) => {
         users: action.payload.users,
         totalPages: action.payload.totalPages,
         currentPage: action.payload.currentPage,
+        count: action.payload?.count,
+        perPage: action.payload?.perPage,
         error: "",
       };
     case FETCH_USERS_FAILURE:
-      return { ...state, error: action.payload, users: [] };
+      return { ...state, error: action.payload, users: [], count: 0 };
     default:
       return state;
   }
+
+
 };
 
 export default userReducer;

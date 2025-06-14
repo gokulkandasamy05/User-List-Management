@@ -1,0 +1,103 @@
+@mixin icon($color) {
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 1.3rem;
+    background-color: $color;
+}
+
+
+.container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 2.5rem;
+
+    &__card {
+        padding: 0;
+        margin: 0;
+        width: 80%;
+
+        .pagination {
+            display: flex;
+            justify-content: end;
+        }
+
+        &--header {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card__view {
+            padding: 20px;
+
+            &--card {
+                width: 100%;
+                position: relative;
+                border-radius: 10px;
+                overflow: hidden;
+
+                &:hover {
+                    .card__view--card-actions {
+                        visibility: visible;
+                    }
+                }
+            }
+
+
+            &--card-name {
+                font-size: 1.1rem;
+            }
+
+            &--card-email {
+                color: #808080;
+            }
+
+            &--card-actions {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                background-color: rgba(176, 168, 168, 0.75);
+                left: 0;
+                height: 100%;
+                align-content: center;
+                visibility: hidden;
+
+                .icons-edit {
+                    @include icon(#8686e6)
+                }
+
+                .icons-delete {
+                    @include icon(#fd0100)
+                }
+            }
+
+
+        }
+
+        .custom-segmented {
+            margin-top: 1rem;
+
+            .ant-segmented-item-selected {
+                color: #1677ff !important;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .container__card--header {
+        flex-direction: column;
+        row-gap: 1rem;
+        width: 100%;
+        text-align: center;
+
+        .ant-space {
+            width: 100%;
+
+            .ant-input-search {
+                width: 100% !important;
+            }
+        }
+
+    }
+}

@@ -1,8 +1,8 @@
 import { Navigate } from 'react-router-dom';
-import { userData } from '../utils/common';
+import useLoginData from '../hooks/useLoginData';
 
 const ProtectedRoute = ({ children }) => {
-  const user = userData();
+  const [user] = useLoginData();
 
   if (!user) {
     return <Navigate to="/login" replace />;

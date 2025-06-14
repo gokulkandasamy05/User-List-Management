@@ -1,13 +1,3 @@
-export const userData = () => {
-    const localstorageData = localStorage.getItem(process.env.REACT_APP_LOGIN_TOKEN)
-    if (!!localstorageData) {
-        return JSON.parse(localstorageData)
-    }
-    return null
-}
-
-
-
 export const setCookie = (cname, cvalue, exdays) => {
     const d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -28,4 +18,11 @@ export const getCookie = (cname) => {
         }
     }
     return "";
+}
+
+export const logout = (navigate) =>{
+    localStorage.clear()
+    if(!!navigate){
+        navigate('/login')
+    }
 }
