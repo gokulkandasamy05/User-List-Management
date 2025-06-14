@@ -18,7 +18,7 @@ const LayoutSec = () => {
       <Layout>
         <Header className='layout__haeder'>
           <div className='layout__haeder--content'>
-            <p>test</p>
+            <p>{user?.login}</p>
             <LoginOutlined style={{fontSize:'1rem', cursor:'pointer', padding:'8px', backgroundColor:'red', borderRadius:'5px', alignContent:'center'}} onClick={() => logout(navigate)} />
           </div>
         </Header>

@@ -46,7 +46,7 @@ const Login = () => {
         const responseData = res?.data
         console.log(responseData)
         if (!!responseData) {
-          localStorage.setItem(process.env.REACT_APP_LOGIN_TOKEN, JSON.stringify({ ...responseData }))
+          localStorage.setItem(process.env.REACT_APP_LOGIN_TOKEN, JSON.stringify({ ...responseData, login: body?.email }))
           if (remember) {
             setCookie('email', values?.email, 1)
             setCookie('password', values?.password, 1)
