@@ -7,11 +7,19 @@ import { setLoadingFalse, setLoadingTrue } from '../redux/actions/loaderActions'
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getCookie, setCookie } from '../utils/common';
+import useLoginData from '../hooks/useLoginData';
 
 const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate();
   const [form] = Form.useForm();
+  const [user] = useLoginData();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, []);
 
 
   useEffect(() => {
@@ -61,7 +69,7 @@ const Login = () => {
             labelCol={{ span: 0 }}
             wrapperCol={{ span: 24 }}
             style={{ maxWidth: 800 }}
-            initialValues={{ remember: false, email:'', password:'' }}
+            initialValues={{ remember: false, email: '', password: '' }}
             onFinish={submitForm}
             autoComplete="off"
             form={form}
@@ -75,7 +83,7 @@ const Login = () => {
               ]}
               className='login__form--input'
             >
-              <Input size="large" placeholder="Email" prefix={<UserOutlined style={{marginRight:'10px'}} />} />
+              <Input size="large" placeholder="Email" prefix={<UserOutlined style={{ marginRight: '10px' }} />} />
             </Form.Item>
 
             <Form.Item
@@ -84,7 +92,7 @@ const Login = () => {
               rules={[{ required: true, message: 'Password is required' }]}
               className='login__form--input'
             >
-              <Input.Password size="large" placeholder="Password" prefix={<LockOutlined style={{marginRight:'10px'}} />} />
+              <Input.Password size="large" placeholder="Password" prefix={<LockOutlined style={{ marginRight: '10px' }} />} />
             </Form.Item>
 
             <Form.Item name="remember" valuePropName="checked" label={null}>
@@ -92,7 +100,7 @@ const Login = () => {
             </Form.Item>
 
             <Form.Item label={null}>
-              <Button block type="primary" style={{padding:'20px'}} htmlType="submit">
+              <Button block type="primary" style={{ padding: '20px' }} htmlType="submit">
                 Submit
               </Button>
             </Form.Item>
