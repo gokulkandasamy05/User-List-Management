@@ -5,7 +5,7 @@ import React from 'react'
 const Spinner = () => {
     return (
         <div className='spinner'>
-            <Spin size="large"/>
+            <Spin fullscreen size="large"/>
         </div>
     )
 }

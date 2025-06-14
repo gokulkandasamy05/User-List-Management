@@ -3,6 +3,7 @@
     border-radius: 50%;
     font-size: 1.3rem;
     background-color: $color;
+    color: #fff;
 }
 
 
@@ -11,12 +12,14 @@
     display: flex;
     justify-content: center;
     margin-top: 2.5rem;
-
+    margin-bottom: 2.5rem;
+    min-height: 90vh;
+    height: auto;
     &__card {
         padding: 0;
         margin: 0;
         width: 80%;
-
+        height: fit-content;
         .pagination {
             display: flex;
             margin: 15px 0 15px 0;
@@ -26,6 +29,11 @@
         &--header {
             display: flex;
             justify-content: space-between;
+
+            .search_user {
+                display: flex;
+                column-gap: 1rem;
+            }
         }
 
         .card__view {
@@ -37,6 +45,7 @@
                 border-radius: 10px;
                 overflow: hidden;
                 text-align: center;
+                border: 0.2px solid black;
 
                 &:hover {
                     .card__view--card-actions {
@@ -92,7 +101,6 @@
         row-gap: 1rem;
         width: 100%;
         text-align: center;
-
         .ant-space {
             width: 100%;
 
@@ -103,3 +111,15 @@
 
     }
 }
+
+@media screen and (max-width: 500px) {
+    .container__card--header {
+        .search_user {
+            display: flex;
+            flex-direction: column;
+            row-gap: 1rem;
+        }
+
+    }
+}
+

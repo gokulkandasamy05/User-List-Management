@@ -11,6 +11,7 @@
     color: aliceblue;
     font-size: 1rem;
     height: 10vh;
+    padding: 0 30px;
     &--content{
         display: flex;
         align-items: center;
@@ -19,7 +20,7 @@
   }
 
   &__content{
-    height: 100vh;
+    height: 100%;
   }
 
 }

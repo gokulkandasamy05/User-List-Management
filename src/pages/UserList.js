@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import '../styles/user.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../redux/actions/userActions';
-import { Button, Card, Space, Input, Segmented, Avatar, Popconfirm, Modal, Form, notification } from 'antd';
+import { Button, Card, Space, Input, Segmented, Avatar, Popconfirm, Modal, Form } from 'antd';
 import { AppstoreOutlined, TableOutlined } from '@ant-design/icons';
 import CardView from '../components/CardView';
 import TableView from '../components/TableView';
@@ -11,21 +11,19 @@ import { setLoadingFalse, setLoadingTrue } from '../redux/actions/loaderActions'
 import { toast } from 'react-toastify';
 import PaginationCom from '../components/Pagination';
 import UserCard from '../components/user/UserCard';
-const { Search } = Input;
+import DebounceSearch from '../components/common/DebounceSearch';
 
 
 const UserList = () => {
   const dispatch = useDispatch();
   const responseData = useSelector(state => state?.User)
   const [form] = Form.useForm();
-
   const [usersList, setUsersList] = useState({})
   const [view, setView] = useState('Table')
   const [modalOpen, isModalOpen] = useState({
     isOpen: false,
     editData: {}
   })
-  const timer = useRef(null)
 
 
   const columns = useMemo(() => {
@@ -77,6 +75,8 @@ const UserList = () => {
     dispatch(fetchUsers(1));
   }, []);
 
+
+
   const openModal = (data = {}) => {
     form.setFieldsValue({
       email: data?.email ?? '',
@@ -90,11 +90,12 @@ const UserList = () => {
     })
   }
 
+
   const onChange = (val) => {
     dispatch(fetchUsers(val));
   }
 
-  const onSearch = (val) => {
+  const onSearchClick = (val) => {
     filerUserList(val)
   }
 
@@ -129,19 +130,6 @@ const UserList = () => {
     }
   }
 
-  const searchOnChange = (val) => {
-    if (!!timer?.current) {
-      clearTimeout(timer.current)
-    }
-    timer.current = setTimeout(() => {
-      const value = val?.target?.value
-      if (value) {
-        filerUserList(value)
-      } else {
-        setUsersList({ ...responseData })
-      }
-    }, 1000)
-  }
 
   const submitForm = async (values) => {
     dispatch(setLoadingTrue())
@@ -166,6 +154,14 @@ const UserList = () => {
   }
 
 
+  const getDebounceValue = (val) => {
+    if (val) {
+      filerUserList(val)
+    } else {
+      setUsersList({ ...responseData })
+    }
+  }
+
   return (
     <>
       <div className='container'>
@@ -173,10 +169,10 @@ const UserList = () => {
 
           <div className='container__card--header'>
             <h2>Users</h2>
-            <Space>
-              <Search className='search' placeholder="input search text" onChange={searchOnChange} onSearch={onSearch} style={{ width: 200 }} />
+            <div className='search_user'>
+              <DebounceSearch getDebounceValue={getDebounceValue} onSearchClick={onSearchClick}></DebounceSearch>
               <Button type="primary" onClick={() => openModal()}>Create User</Button>
-            </Space>
+            </div>
           </div>
 
 

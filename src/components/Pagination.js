@@ -1,4 +1,5 @@
 import { Pagination } from 'antd'
+import React from 'react'
 
 const PaginationCom = ({onChange, current, total}) => {
     return (
@@ -8,4 +9,4 @@ const PaginationCom = ({onChange, current, total}) => {
     )
 }
 
-export default PaginationCom
+export default React.memo(PaginationCom)

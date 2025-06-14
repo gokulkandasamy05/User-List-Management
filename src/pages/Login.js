@@ -75,7 +75,7 @@ const Login = () => {
               ]}
               className='login__form--input'
             >
-              <Input size="large" placeholder="Email" prefix={<UserOutlined />} />
+              <Input size="large" placeholder="Email" prefix={<UserOutlined style={{marginRight:'10px'}} />} />
             </Form.Item>
 
             <Form.Item
@@ -84,7 +84,7 @@ const Login = () => {
               rules={[{ required: true, message: 'Password is required' }]}
               className='login__form--input'
             >
-              <Input.Password size="large" placeholder="Password" prefix={<LockOutlined />} />
+              <Input.Password size="large" placeholder="Password" prefix={<LockOutlined style={{marginRight:'10px'}} />} />
             </Form.Item>
 
             <Form.Item name="remember" valuePropName="checked" label={null}>
@@ -92,7 +92,7 @@ const Login = () => {
             </Form.Item>
 
             <Form.Item label={null}>
-              <Button block type="primary" htmlType="submit">
+              <Button block type="primary" style={{padding:'20px'}} htmlType="submit">
                 Submit
               </Button>
             </Form.Item>
