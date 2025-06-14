@@ -29,7 +29,8 @@ const Login = () => {
     if (email && password) {
       form.setFieldsValue({
         email,
-        password
+        password,
+        remember: true
       });
     }
   }, [form])
