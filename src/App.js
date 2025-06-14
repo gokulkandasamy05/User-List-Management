@@ -1,6 +1,5 @@
 import React, { lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate, BrowserRouter } from 'react-router-dom';
-import Login from './pages/Login';
 import Layout from './layouts/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ProtectedRoutes } from './utils/routes';
@@ -9,6 +8,8 @@ import Spinner from './components/Spinner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PageNotFound from './components/PageNotFound';
+import Login from './pages/Login';
+
 
 function App() {
   const { loading } = useSelector(state => state?.Loader)
