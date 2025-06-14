@@ -1,7 +1,7 @@
 {
   "name": "user_list_management",
   "version": "0.1.0",
-  "homepage": "https://gokulkandasamy05.github.io/user_list_management",
+  "homepage": "https://gokulkandasamy05.github.io/User-List-Management",
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^6.0.0",
