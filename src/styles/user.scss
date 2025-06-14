@@ -19,6 +19,7 @@
 
         .pagination {
             display: flex;
+            margin: 15px 0 15px 0;
             justify-content: end;
         }
 
@@ -35,6 +36,7 @@
                 position: relative;
                 border-radius: 10px;
                 overflow: hidden;
+                text-align: center;
 
                 &:hover {
                     .card__view--card-actions {

@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import Spinner from './components/Spinner';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import PageNotFound from './components/PageNotFound';
 
 function App() {
   const { loading } = useSelector(state => state?.Loader)
@@ -23,6 +24,7 @@ function App() {
                 <Route key={route} path={route} element={<Component />} />
               ))}
             </Route>
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Suspense>
       </BrowserRouter>

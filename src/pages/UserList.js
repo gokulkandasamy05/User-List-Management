@@ -2,13 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import '../styles/user.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../redux/actions/userActions';
-import { Button, Card, Space, Input, Segmented, Pagination, Avatar, Popconfirm, Modal, Form, notification } from 'antd';
+import { Button, Card, Space, Input, Segmented, Avatar, Popconfirm, Modal, Form, notification } from 'antd';
 import { AppstoreOutlined, TableOutlined } from '@ant-design/icons';
 import CardView from '../components/CardView';
 import TableView from '../components/TableView';
 import Axios from '../utils/axios';
 import { setLoadingFalse, setLoadingTrue } from '../redux/actions/loaderActions';
 import { toast } from 'react-toastify';
+import PaginationCom from '../components/Pagination';
+import UserCard from '../components/user/UserCard';
 const { Search } = Input;
 
 
@@ -102,24 +104,25 @@ const UserList = () => {
 
   const handleDelete = (val) => {
     dispatch(setLoadingTrue())
-    Axios.delete(`/users/${val}`).then(res =>{
+    Axios.delete(`/users/${val}`).then(res => {
       console.log(res);
       if (res?.status === 204) {
         toast.success('User Deleted Successfully')
         dispatch(fetchUsers(1));
       }
-    }).catch(err =>{
+    }).catch(err => {
       console.log(err)
       toast.error('Something Went Wrong')
-    }).finally(() =>{
+    }).finally(() => {
       dispatch(setLoadingFalse())
     })
   }
 
-  const filerUserList = (searchText) => {
+  const filerUserList = (searchText = '') => {
     let user_data = responseData?.users
     if (user_data?.length) {
-      const filteredData = user_data.filter(item => item.first_name.includes(searchText) || item.last_name.includes(searchText))
+      const value = !!searchText ? searchText.toLowerCase() : ''
+      const filteredData = user_data.filter(item => item.first_name.toLowerCase().includes(value) || item.last_name.toLowerCase().includes(value))
       setUsersList(p => {
         return { ...p, users: filteredData, count: filteredData?.length ?? 0, totalPages: 1 }
       })
@@ -147,9 +150,9 @@ const UserList = () => {
     res.then(res => {
       console.log(res)
       const status = res?.status
-      if(_id && status === 200){
+      if (_id && status === 200) {
         toast.success('User Updated Successfully')
-      }else if(!(!!_id) && status === 201){
+      } else if (!(!!_id) && status === 201) {
         toast.success('User Created Successfully')
       }
       dispatch(fetchUsers(1));
@@ -175,6 +178,8 @@ const UserList = () => {
               <Button type="primary" onClick={() => openModal()}>Create User</Button>
             </Space>
           </div>
+
+
           <Segmented
             className="custom-segmented"
             value={view}
@@ -200,10 +205,18 @@ const UserList = () => {
             ]}
           />
 
-          {view === 'Card' ? <CardView dataSource={usersList?.users} handleDelete={handleDelete} openModal={openModal}></CardView> : <TableView columns={columns} dataSource={usersList?.users}></TableView>}
-          <div className='pagination'>
-            <Pagination onChange={onChange} current={usersList?.currentPage} defaultCurrent={1} total={usersList?.count} />;
-          </div>
+
+
+          {
+            view === 'Card' ?
+              <CardView dataSource={usersList?.users} renderItem={(item) => <UserCard item={item} handleDelete={handleDelete} openModal={openModal}></UserCard>} />
+              : <TableView columns={columns} dataSource={usersList?.users} />
+          }
+
+
+          <PaginationCom onChange={onChange} current={usersList?.currentPage} total={usersList?.count}></PaginationCom>
+
+
         </Card>
       </div>
 
@@ -218,7 +231,7 @@ const UserList = () => {
           name="basic"
           labelCol={{ span: 0 }}
           wrapperCol={{ span: 24 }}
-          style={{ maxWidth: 800, marginTop:'2rem' }}
+          style={{ maxWidth: 800, marginTop: '2rem' }}
           initialValues={{ first_name: '', last_name: '', email: '', avatar: '' }}
           onFinish={submitForm}
           autoComplete="off"
@@ -262,7 +275,7 @@ const UserList = () => {
           </Form.Item>
 
           <Form.Item label={null}>
-            <div style={{float:'right'}}>
+            <div style={{ float: 'right' }}>
               <Space>
                 <Button block onClick={() => openModal()}>
                   Cancel
