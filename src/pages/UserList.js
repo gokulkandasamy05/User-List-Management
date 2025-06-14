@@ -96,7 +96,11 @@ const UserList = () => {
   }
 
   const onSearchClick = (val) => {
-    filerUserList(val)
+    if (val) {
+      filerUserList(val)
+    }else{
+      toast.error('Please enter value')
+    }
   }
 
   const setListView = (val) => {
