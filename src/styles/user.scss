@@ -24,6 +24,11 @@
             display: flex;
             margin: 15px 0 15px 0;
             justify-content: end;
+            column-gap: 0.5rem;
+            .active{
+                color: #1677ff;
+                border: 1px solid #1677ff;
+            }
         }
 
         &--header {

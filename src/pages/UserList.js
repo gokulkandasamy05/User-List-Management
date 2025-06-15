@@ -13,6 +13,7 @@ import PaginationCom from '../components/Pagination';
 import UserCard from '../components/user/UserCard';
 import DebounceSearch from '../components/common/DebounceSearch';
 
+const perPage = 5
 
 const UserList = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,19 @@ const UserList = () => {
     isOpen: false,
     editData: {}
   })
+
+
+  useEffect(() => {
+    dispatch(fetchUsers(50));
+  }, []);
+  
+
+  useEffect(() => {
+    if (responseData) {
+      const users = showUserPerPage(responseData?.users)
+      setUsersList({ ...responseData, users: users })
+    }
+  }, [responseData])
 
 
   const columns = useMemo(() => {
@@ -65,18 +79,65 @@ const UserList = () => {
     ]
   }, []);
 
-  useEffect(() => {
-    if (responseData) {
-      setUsersList({ ...responseData })
+  const setListView = (val) => {
+    setView(val)
+  }
+
+
+
+  //pagination
+  const showUserPerPage = (list, val = 1) => {
+    if (list?.length) {
+      const slicedData = list.slice(
+        (val - 1) * perPage,
+        val * perPage
+      );
+      return slicedData
     }
-  }, [responseData])
+  }
 
-  useEffect(() => {
-    dispatch(fetchUsers(1));
-  }, []);
+  const onPageClick = (val) => {
+    let users_data = responseData?.users
+    let users = showUserPerPage(users_data, val)
+    setUsersList(p => {
+      return { ...p, users: users }
+    })
+  }
 
 
 
+  //filter
+  const filerUserList = (searchText = '') => {
+    let user_data = responseData?.users
+    if (user_data?.length) {
+      const value = !!searchText ? searchText.toLowerCase() : ''
+      const filteredData = user_data.filter(item => item.first_name.toLowerCase().includes(value) || item.last_name.toLowerCase().includes(value))
+      setUsersList(p => {
+        return { ...p, users: filteredData, count: filteredData?.length ?? 0, totalPages: 1 }
+      })
+    }
+  }
+
+  const onSearchClick = (val) => {
+    if (val) {
+      filerUserList(val)
+    } else {
+      toast.error('Please enter value')
+    }
+  }
+
+  const getDebounceValue = (val) => {
+    if (val) {
+      filerUserList(val)
+    } else {
+      const users = showUserPerPage(responseData?.users, 1)
+      setUsersList({ ...responseData, users: users })
+    }
+  }
+
+
+
+  //form
   const openModal = (data = {}) => {
     form.setFieldsValue({
       email: data?.email ?? '',
@@ -90,51 +151,6 @@ const UserList = () => {
     })
   }
 
-
-  const onChange = (val) => {
-    dispatch(fetchUsers(val));
-  }
-
-  const onSearchClick = (val) => {
-    if (val) {
-      filerUserList(val)
-    } else {
-      toast.error('Please enter value')
-    }
-  }
-
-  const setListView = (val) => {
-    setView(val)
-  }
-
-  const handleDelete = (val) => {
-    dispatch(setLoadingTrue())
-    Axios.delete(`/users/${val}`).then(res => {
-      console.log(res);
-      if (res?.status === 204) {
-        toast.success('User Deleted Successfully')
-        dispatch(fetchUsers(1));
-      }
-    }).catch(err => {
-      console.log(err)
-      toast.error('Something Went Wrong')
-    }).finally(() => {
-      dispatch(setLoadingFalse())
-    })
-  }
-
-  const filerUserList = (searchText = '') => {
-    let user_data = responseData?.users
-    if (user_data?.length) {
-      const value = !!searchText ? searchText.toLowerCase() : ''
-      const filteredData = user_data.filter(item => item.first_name.toLowerCase().includes(value) || item.last_name.toLowerCase().includes(value))
-      setUsersList(p => {
-        return { ...p, users: filteredData, count: filteredData?.length ?? 0, totalPages: 1 }
-      })
-    }
-  }
-
-
   const submitForm = async (values) => {
     dispatch(setLoadingTrue())
     const _id = modalOpen?.editData?.id
@@ -147,7 +163,7 @@ const UserList = () => {
       } else if (!(!!_id) && status === 201) {
         toast.success('User Created Successfully')
       }
-      dispatch(fetchUsers(1));
+      dispatch(fetchUsers(50));
     }).catch(err => {
       console.log(err)
       toast.error('Something Went Wrong')
@@ -157,13 +173,20 @@ const UserList = () => {
     })
   }
 
-
-  const getDebounceValue = (val) => {
-    if (val) {
-      filerUserList(val)
-    } else {
-      setUsersList({ ...responseData })
-    }
+  const handleDelete = (val) => {
+    dispatch(setLoadingTrue())
+    Axios.delete(`/users/${val}`).then(res => {
+      console.log(res);
+      if (res?.status === 204) {
+        toast.success('User Deleted Successfully')
+        dispatch(fetchUsers(50));
+      }
+    }).catch(err => {
+      console.log(err)
+      toast.error('Something Went Wrong')
+    }).finally(() => {
+      dispatch(setLoadingFalse())
+    })
   }
 
   return (
@@ -205,17 +228,12 @@ const UserList = () => {
             ]}
           />
 
-
-
           {
-            view === 'Card' ?
-              <CardView dataSource={usersList?.users} renderItem={(item) => <UserCard item={item} handleDelete={handleDelete} openModal={openModal}></UserCard>} />
+            view === 'Card' ? <CardView dataSource={usersList?.users} renderItem={(item) => <UserCard item={item} handleDelete={handleDelete} openModal={openModal}></UserCard>} />
               : <TableView columns={columns} dataSource={usersList?.users} />
           }
 
-
-          <PaginationCom onChange={onChange} current={usersList?.currentPage} total={usersList?.count}></PaginationCom>
-
+          <PaginationCom onChange={onPageClick} total={usersList?.count} perPage={perPage}></PaginationCom>
 
         </Card>
       </div>

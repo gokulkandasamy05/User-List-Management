@@ -14,7 +14,7 @@ export const fetchUsers = (page = 1) => {
     dispatch({ type: FETCH_USERS_REQUEST });
 
     try {
-      const response = await Axios.get(`/users?page=${page}`);
+      const response = await Axios.get(`/users?per_page=${page}`);
       console.log(response);
       dispatch({
         type: FETCH_USERS_SUCCESS,
