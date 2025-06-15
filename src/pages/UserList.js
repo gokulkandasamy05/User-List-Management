@@ -127,7 +127,7 @@ const UserList = () => {
       const value = !!searchText ? searchText.toLowerCase() : ''
       const filteredData = user_data.filter(item => (item.first_name.toLowerCase().includes(value) || item.last_name.toLowerCase().includes(value)))
       setCopyOfOriginalData(filteredData)
-    }else{
+    } else {
       setCopyOfOriginalData([...responseData?.users])
     }
   }
@@ -234,9 +234,6 @@ const UserList = () => {
       })
     }
   }
-
-console.log(copyOforiginalData, usersList);
-
 
   return (
     <>
@@ -376,15 +373,15 @@ console.log(copyOforiginalData, usersList);
         onCancel={() => toggleDeleteModal()}
         footer={null}
       >
-        <p>Are you sure ?</p>
-        <Space>
-          <Button block onClick={() => toggleDeleteModal()}>
-            Cancel
-          </Button>
-          <Button block type="primary" onClick={handleDelete}>
-            Submit
-          </Button>
-        </Space>
+          <p style={{ marginBottom: '1rem' }}>Are you sure ?</p>
+          <Space>
+            <Button block onClick={() => toggleDeleteModal()}>
+              Cancel
+            </Button>
+            <Button block type="primary" onClick={handleDelete}>
+              Submit
+            </Button>
+          </Space>
       </Modal>
     </>
   )

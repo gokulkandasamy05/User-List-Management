@@ -3,7 +3,7 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
 
 
-const PaginationCom = ({ onChange, total, perPage = 5 }) => {
+const PaginationCom = ({ onChange, total = 0, perPage = 5 }) => {
 
 
     const [currentPage, setCurrentPage] = useState(1)
