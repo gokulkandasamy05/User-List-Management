@@ -46,6 +46,8 @@ const UserList = () => {
       setUsersList(p => {
         return { ...p, users: users, count: copyOforiginalData?.length }
       })
+    }else{
+      setUsersList({})
     }
   }, [copyOforiginalData])
 

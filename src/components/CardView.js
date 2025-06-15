@@ -1,4 +1,4 @@
-import { Col, Row } from 'antd'
+import { Col, Empty, Row } from 'antd'
 
 const CardView = ({ dataSource, renderItem }) => {
     return (
@@ -16,7 +16,7 @@ const CardView = ({ dataSource, renderItem }) => {
                     })
                 }
             </Row>
-        </> : null
+        </> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
     )
 }
 
