@@ -25,7 +25,6 @@ const Login = () => {
   useEffect(() => {
     const email = getCookie('email')
     const password = getCookie('password')
-    console.log(email, password)
     if (email && password) {
       form.setFieldsValue({
         email,

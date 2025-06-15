@@ -22,6 +22,6 @@ body {
   row-gap: 1rem;
 }
 
-.form__input{
-
+#webpack-dev-server-client-overlay-div, #webpack-dev-server-client-overlay {
+    display: none !important;
 }

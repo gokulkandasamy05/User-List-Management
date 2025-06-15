@@ -9,26 +9,30 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import PageNotFound from './components/PageNotFound';
 import Login from './pages/Login';
+import ErrorBoundary from './components/ErrorBoundary';
 
 
 function App() {
   const { loading } = useSelector(state => state?.Loader)
   return (
     <>
-      <BrowserRouter>
-        <Suspense fallback={<Spinner/>}>
-          <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-              <Route index element={<Navigate to="/user_list" replace />} />
-              {ProtectedRoutes.map(({ route, component: Component }) => (
-                <Route key={route} path={route} element={<Component />} />
-              ))}
-            </Route>
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </Suspense>
-      </BrowserRouter>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Suspense fallback={<Spinner />}>
+            <Routes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+                <Route index element={<Navigate to="/user_list" replace />} />
+                {ProtectedRoutes.map(({ route, component: Component }) => (
+                  <Route key={route} path={route} element={<Component />} />
+                ))}
+              </Route>
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </Suspense>
+        </BrowserRouter>
+      </ErrorBoundary>
+
       <ToastContainer
         position="top-right"
         autoClose={2000}
@@ -41,6 +45,7 @@ function App() {
         pauseOnHover
         theme="light"
       />
+
       {loading && <Spinner></Spinner>}
     </>
   );

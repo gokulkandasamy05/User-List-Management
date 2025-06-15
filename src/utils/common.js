@@ -1,7 +1,10 @@
-export const setCookie = (cname, cvalue, exdays) => {
-    const d = new Date();
-    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-    let expires = "expires=" + d.toUTCString();
+export const setCookie = (cname, cvalue, minutes) => {
+    let expires = "";
+    if (minutes) {
+        let date = new Date();
+        date.setTime(date.getTime() + (minutes * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
@@ -20,9 +23,9 @@ export const getCookie = (cname) => {
     return "";
 }
 
-export const logout = (navigate) =>{
+export const logout = (navigate) => {
     localStorage.clear()
-    if(!!navigate){
+    if (!!navigate) {
         navigate('/login')
     }
 }
