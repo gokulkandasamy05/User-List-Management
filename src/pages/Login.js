@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getCookie, setCookie } from '../utils/common';
 import useLoginData from '../hooks/useLoginData';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const dispatch = useDispatch()
@@ -47,14 +48,17 @@ const Login = () => {
         if (!!responseData) {
           localStorage.setItem(process.env.REACT_APP_LOGIN_TOKEN, JSON.stringify({ ...responseData, login: body?.email }))
           if (remember) {
-            setCookie('email', values?.email, 1)
-            setCookie('password', values?.password, 1)
+            setCookie('email', values?.email, 30)
+            setCookie('password', values?.password, 30)
           }
           navigate('/user_list')
         }
       })
       .catch(err => {
         console.log(err)
+        if (err?.status === 400) {
+          toast.error('Invalid login details. Please check and try again.');
+        }
         dispatch(setLoadingFalse())
       })
   };
