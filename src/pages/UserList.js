@@ -169,7 +169,7 @@ const UserList = () => {
     const arr = responseData?.users
     let modifiedArr = arr.map(item => {
       if ((+item?.id) === (+_id)) {
-        return { ...data }
+        return { ...data, id: _id }
       }
       return item
     })
@@ -218,9 +218,9 @@ const UserList = () => {
   }
 
   const handleDelete = () => {
-    dispatch(setLoadingTrue())
     const _id = deleteModal?.deleteData?.id
     if (_id) {
+      dispatch(setLoadingTrue())
       Axios.delete(`/users/${_id}`).then(res => {
         console.log(res);
         if (res?.status === 204) {
@@ -281,7 +281,7 @@ const UserList = () => {
               : <TableView columns={columns} dataSource={usersList?.users} />
           }
 
-          <PaginationCom onChange={onPageClick} total={usersList?.count} perPage={perPage}></PaginationCom>
+          <PaginationCom onChange={onPageClick} data={responseData} total={usersList?.count} perPage={perPage}></PaginationCom>
 
         </Card>
       </div>

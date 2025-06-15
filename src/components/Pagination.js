@@ -3,12 +3,17 @@ import { LeftOutlined, RightOutlined } from '@ant-design/icons'
 import { Button, Space } from 'antd'
 
 
-const PaginationCom = ({ onChange, total = 0, perPage = 5 }) => {
+const PaginationCom = ({ onChange, total = 0, perPage = 5, data = '' }) => {
 
 
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPages, setTotalPages] = useState(0)
 
+    useEffect(() => {
+        if (data) {
+            setCurrentPage(1)
+        }
+    }, [data])
 
     useEffect(() => {
         setTotalPages(Math.ceil(total / perPage))
@@ -21,7 +26,7 @@ const PaginationCom = ({ onChange, total = 0, perPage = 5 }) => {
         }
     }, [currentPage])
 
-    
+
     return (
         !!totalPages && <div className="pagination">
             <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} icon={<LeftOutlined />} />
