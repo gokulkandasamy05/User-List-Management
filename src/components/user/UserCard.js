@@ -4,7 +4,7 @@ import { Avatar, Card, Popconfirm, Space } from 'antd'
 
 
 
-const UserCard = ({ item, handleDelete, openModal }) => {
+const UserCard = ({ item, toggleDeleteModal, openModal }) => {
     return (
         <Card
             hoverable
@@ -16,9 +16,7 @@ const UserCard = ({ item, handleDelete, openModal }) => {
             <div className='card__view--card-actions'>
                 <Space>
                     <EditOutlined className='icons-edit' onClick={() => openModal(item)} />
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(item.id)}>
-                        <DeleteOutlined className='icons-delete' />
-                    </Popconfirm>
+                    <DeleteOutlined className='icons-delete' onClick={() => toggleDeleteModal(item)}/>
                 </Space>
             </div>
         </Card>

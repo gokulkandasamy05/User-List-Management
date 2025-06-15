@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import '../styles/user.scss'
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../redux/actions/userActions';
@@ -12,30 +12,47 @@ import { toast } from 'react-toastify';
 import PaginationCom from '../components/Pagination';
 import UserCard from '../components/user/UserCard';
 import DebounceSearch from '../components/common/DebounceSearch';
+import { FETCH_USERS_SUCCESS } from '../redux/types';
 
 const perPage = 5
 
 const UserList = () => {
   const dispatch = useDispatch();
-  const responseData = useSelector(state => state?.User)
   const [form] = Form.useForm();
+
+  const responseData = useSelector(state => state?.User)
+  const [copyOforiginalData, setCopyOfOriginalData] = useState([])
   const [usersList, setUsersList] = useState({})
+
   const [view, setView] = useState('Table')
   const [modalOpen, isModalOpen] = useState({
     isOpen: false,
     editData: {}
+  })
+  const [deleteModal, seDeleteModal] = useState({
+    isOpen: false,
+    deleteData: {}
   })
 
 
   useEffect(() => {
     dispatch(fetchUsers(50));
   }, []);
-  
+
+
+  useEffect(() => {
+    if (copyOforiginalData?.length) {
+      const users = showUserPerPage(copyOforiginalData, 1)
+      setUsersList(p => {
+        return { ...p, users: users, count: copyOforiginalData?.length }
+      })
+    }
+  }, [copyOforiginalData])
 
   useEffect(() => {
     if (responseData) {
-      const users = showUserPerPage(responseData?.users)
-      setUsersList({ ...responseData, users: users })
+      const _data = [...responseData?.users]
+      setCopyOfOriginalData(_data)
     }
   }, [responseData])
 
@@ -71,9 +88,7 @@ const UserList = () => {
         render: (_, record) =>
           <Space>
             <Button type="primary" onClick={() => openModal(record)}>Edit</Button>
-            <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.id)}>
-              <Button type="primary" danger>Delete</Button>
-            </Popconfirm>
+            <Button type="primary" danger onClick={() => toggleDeleteModal(record)}>Delete</Button>
           </Space>
       },
     ]
@@ -97,8 +112,7 @@ const UserList = () => {
   }
 
   const onPageClick = (val) => {
-    let users_data = responseData?.users
-    let users = showUserPerPage(users_data, val)
+    let users = showUserPerPage(copyOforiginalData, val)
     setUsersList(p => {
       return { ...p, users: users }
     })
@@ -108,13 +122,13 @@ const UserList = () => {
 
   //filter
   const filerUserList = (searchText = '') => {
-    let user_data = responseData?.users
-    if (user_data?.length) {
+    let user_data = [...responseData?.users]
+    if (user_data?.length && !!searchText) {
       const value = !!searchText ? searchText.toLowerCase() : ''
-      const filteredData = user_data.filter(item => item.first_name.toLowerCase().includes(value) || item.last_name.toLowerCase().includes(value))
-      setUsersList(p => {
-        return { ...p, users: filteredData, count: filteredData?.length ?? 0, totalPages: 1 }
-      })
+      const filteredData = user_data.filter(item => (item.first_name.toLowerCase().includes(value) || item.last_name.toLowerCase().includes(value)))
+      setCopyOfOriginalData(filteredData)
+    }else{
+      setCopyOfOriginalData([...responseData?.users])
     }
   }
 
@@ -127,17 +141,44 @@ const UserList = () => {
   }
 
   const getDebounceValue = (val) => {
-    if (val) {
+    if (!!val) {
       filerUserList(val)
     } else {
-      const users = showUserPerPage(responseData?.users, 1)
-      setUsersList({ ...responseData, users: users })
+      setCopyOfOriginalData([...responseData?.users])
     }
   }
 
 
+  const toggleDeleteModal = (data = {}) => {
+    seDeleteModal(p => {
+      return { ...p, isOpen: !p.isOpen, deleteData: data }
+    })
+  }
+
 
   //form
+  const addUser = (data) => {
+    const arr = responseData?.users
+    arr.unshift(data)
+    dispatch({ type: FETCH_USERS_SUCCESS, payload: { users: arr } })
+  }
+
+  const editUser = (data, _id) => {
+    const arr = responseData?.users
+    let modifiedArr = arr.map(item => {
+      if ((+item?.id) === (+_id)) {
+        return { ...data }
+      }
+      return item
+    })
+    dispatch({ type: FETCH_USERS_SUCCESS, payload: { users: modifiedArr } })
+  }
+
+  const deleteUser = (_id) => {
+    let a = responseData.users.filter(item => item?.id !== _id)
+    dispatch({ type: FETCH_USERS_SUCCESS, payload: { users: a } })
+  }
+
   const openModal = (data = {}) => {
     form.setFieldsValue({
       email: data?.email ?? '',
@@ -159,11 +200,12 @@ const UserList = () => {
       console.log(res)
       const status = res?.status
       if (_id && status === 200) {
+        editUser(res?.data, _id)
         toast.success('User Updated Successfully')
       } else if (!(!!_id) && status === 201) {
+        addUser(res?.data)
         toast.success('User Created Successfully')
       }
-      dispatch(fetchUsers(50));
     }).catch(err => {
       console.log(err)
       toast.error('Something Went Wrong')
@@ -173,21 +215,28 @@ const UserList = () => {
     })
   }
 
-  const handleDelete = (val) => {
+  const handleDelete = () => {
     dispatch(setLoadingTrue())
-    Axios.delete(`/users/${val}`).then(res => {
-      console.log(res);
-      if (res?.status === 204) {
-        toast.success('User Deleted Successfully')
-        dispatch(fetchUsers(50));
-      }
-    }).catch(err => {
-      console.log(err)
-      toast.error('Something Went Wrong')
-    }).finally(() => {
-      dispatch(setLoadingFalse())
-    })
+    const _id = deleteModal?.deleteData?.id
+    if (_id) {
+      Axios.delete(`/users/${_id}`).then(res => {
+        console.log(res);
+        if (res?.status === 204) {
+          deleteUser(_id)
+          toast.success('User Deleted Successfully')
+        }
+      }).catch(err => {
+        console.log(err)
+        toast.error('Something Went Wrong')
+      }).finally(() => {
+        dispatch(setLoadingFalse())
+        toggleDeleteModal()
+      })
+    }
   }
+
+console.log(copyOforiginalData, usersList);
+
 
   return (
     <>
@@ -197,7 +246,7 @@ const UserList = () => {
           <div className='container__card--header'>
             <h2>Users</h2>
             <div className='search_user'>
-              <DebounceSearch getDebounceValue={getDebounceValue} onSearchClick={onSearchClick}></DebounceSearch>
+              <DebounceSearch getDebounceValue={getDebounceValue} onSearchClick={onSearchClick} delay={500}></DebounceSearch>
               <Button type="primary" onClick={() => openModal()}>Create User</Button>
             </div>
           </div>
@@ -229,7 +278,7 @@ const UserList = () => {
           />
 
           {
-            view === 'Card' ? <CardView dataSource={usersList?.users} renderItem={(item) => <UserCard item={item} handleDelete={handleDelete} openModal={openModal}></UserCard>} />
+            view === 'Card' ? <CardView dataSource={usersList?.users} renderItem={(item) => <UserCard item={item} toggleDeleteModal={toggleDeleteModal} openModal={openModal}></UserCard>} />
               : <TableView columns={columns} dataSource={usersList?.users} />
           }
 
@@ -318,6 +367,24 @@ const UserList = () => {
             </div>
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title={'Delete User'}
+        closable={{ 'aria-label': 'Custom Close Button' }}
+        open={deleteModal?.isOpen}
+        onCancel={() => toggleDeleteModal()}
+        footer={null}
+      >
+        <p>Are you sure ?</p>
+        <Space>
+          <Button block onClick={() => toggleDeleteModal()}>
+            Cancel
+          </Button>
+          <Button block type="primary" onClick={handleDelete}>
+            Submit
+          </Button>
+        </Space>
       </Modal>
     </>
   )

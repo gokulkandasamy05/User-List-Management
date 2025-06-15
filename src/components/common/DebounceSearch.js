@@ -3,8 +3,8 @@ import { Input } from 'antd';
 import useDebounce from '../../hooks/useDebounce';
 const { Search } = Input;
 
-const DebounceSearch = ({ getDebounceValue, onSearchClick }) => {
-    const [debounceValue, debounceOnChange] = useDebounce(1000)
+const DebounceSearch = ({ getDebounceValue, onSearchClick, delay = 300 }) => {
+    const [debounceValue, debounceOnChange] = useDebounce(delay)
     useEffect(() => {
         getDebounceValue(debounceValue)
     }, [debounceValue])

@@ -19,11 +19,11 @@ export const fetchUsers = (page = 1) => {
       dispatch({
         type: FETCH_USERS_SUCCESS,
         payload: {
-          users: response?.data?.data,
-          totalPages: response?.data?.total_pages,
-          currentPage: response?.data?.page,
-          count: response?.data?.total,
-          perPage: response?.data?.per_page
+          users: response?.data?.data??[],
+          totalPages: response?.data?.total_pages??0,
+          currentPage: response?.data?.page??0,
+          count: response?.data?.total??0,
+          perPage: response?.data?.per_page??0
         },
       });
     } catch (error) {

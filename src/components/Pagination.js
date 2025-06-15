@@ -21,10 +21,7 @@ const PaginationCom = ({ onChange, total, perPage = 5 }) => {
         }
     }, [currentPage])
 
-    console.log(totalPages);
     
-
-
     return (
         !!totalPages && <div className="pagination">
             <Button disabled={currentPage === 1} onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} icon={<LeftOutlined />} />
