@@ -13,7 +13,7 @@ const PaginationCom = ({ onChange, total = 0, perPage = 5, data = '' }) => {
         if (data) {
             setCurrentPage(1)
         }
-    }, [data])
+    }, [data, total])
 
     useEffect(() => {
         setTotalPages(Math.ceil(total / perPage))
