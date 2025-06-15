@@ -98,7 +98,7 @@ const UserList = () => {
   const onSearchClick = (val) => {
     if (val) {
       filerUserList(val)
-    }else{
+    } else {
       toast.error('Please enter value')
     }
   }
@@ -235,12 +235,16 @@ const UserList = () => {
           initialValues={{ first_name: '', last_name: '', email: '', avatar: '' }}
           onFinish={submitForm}
           autoComplete="off"
+          layout="vertical"
           form={form}
         >
 
           <Form.Item
             label="First Name"
             name="first_name"
+            layout="vertical"
+            labelCol={{ span: 12 }}
+            className='form__input'
             rules={[{ required: true, message: 'First Name is required' }]}
           >
             <Input size="large" placeholder="First Name" />
@@ -249,6 +253,9 @@ const UserList = () => {
           <Form.Item
             label="Last Name"
             name="last_name"
+            layout="vertical"
+            labelCol={{ span: 12 }}
+            className='form__input'
             rules={[{ required: true, message: 'Last Name is required' }]}
           >
             <Input size="large" placeholder="Last Name" />
@@ -258,8 +265,11 @@ const UserList = () => {
           <Form.Item
             label="Email"
             name="email"
+            className='form__input'
+            layout="vertical"
+            labelCol={{ span: 12 }}
             rules={[
-              { required: true, message: 'Email is requred' },
+              { required: true, message: 'Email is required' },
               { type: 'email', message: 'Please enter valid email' }
             ]}
           >
@@ -269,6 +279,9 @@ const UserList = () => {
           <Form.Item
             label="Profile Image Link"
             name="avatar"
+            layout="vertical"
+            labelCol={{ span: 12 }}
+            className='form__input'
             rules={[{ required: true, message: 'Profile Image Link is required' }]}
           >
             <Input size="large" placeholder="Profile Image Link" />

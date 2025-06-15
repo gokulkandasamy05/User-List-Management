@@ -82,7 +82,7 @@ const Login = () => {
                 { required: true, message: 'Email is requred' },
                 { type: 'email', message: 'Please enter valid email' }
               ]}
-              className='login__form--input'
+              className='form__input'
             >
               <Input size="large" placeholder="Email" prefix={<UserOutlined style={{ marginRight: '10px' }} />} />
             </Form.Item>
@@ -91,7 +91,7 @@ const Login = () => {
               label="Password"
               name="password"
               rules={[{ required: true, message: 'Password is required' }]}
-              className='login__form--input'
+              className='form__input'
             >
               <Input.Password size="large" placeholder="Password" prefix={<LockOutlined style={{ marginRight: '10px' }} />} />
             </Form.Item>
